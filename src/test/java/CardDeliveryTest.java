@@ -1,13 +1,11 @@
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Selectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Keys;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
-import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
 
@@ -18,37 +16,30 @@ public class CardDeliveryTest {
         Configuration.browser = "firefox";
     }
 
+    private String generateDate(int days) {
+        return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
     @Test
     public void correctDeliveryTest() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String currentDate = LocalDate.now().format(formatter);
+        String currentDate = generateDate(3);
         $("[data-test-id=city] input").setValue("Москва");
+        $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(currentDate);
-//        $$(".input__control[type=text]").last().setValue("Иванов Андрей");
         $("[data-test-id=name] input").setValue("Иванов Иван");
         $("[data-test-id=phone] input").setValue("+79111111111");
         $(".checkbox__box").click();
         $$("button").filter(text("Запланировать")).first().click();
         $(".notification__title").shouldHave(text("Успешно!"));
-//        $$("button").filter(text("Перепланировать")).first().click();
+        $("[class='notification__content']")
+                .shouldHave(text("Встреча успешно забронирована на " + currentDate));
     }
 
-//    @Test
-//    public void incorrectDateTest() {
-//        //Заказ на выбранную дату невозможен
-//        $("[data-test-id=city] input").setValue("Москва");
-//        $("[data-test-id=date] input").setValue("01.06.2000");
-//        $("[data-test-id=name] input").setValue("Иванов Иван");
-//        $("[data-test-id=phone] input").setValue("+79111111111");
-//        $(".checkbox__box").click();
-//        $$("button").filter(text("Запланировать")).first().click();
-//        $(".input_invalid .input__sub").shouldHave(text("Заказ на выбранную дату невозможен"));
-//    }
 
     @Test
     public void emptyCityTest() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String currentDate = LocalDate.now().format(formatter);
+        String currentDate = generateDate(3);
+        $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(currentDate);
         $("[data-test-id=name] input").setValue("Иванов Иван"); // баг, с буквой ё не принимается
         $("[data-test-id=phone] input").setValue("+79111111111");
@@ -59,9 +50,9 @@ public class CardDeliveryTest {
 
     @Test
     public void incorrectCityTest() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String currentDate = LocalDate.now().format(formatter);
+        String currentDate = generateDate(3);
         $("[data-test-id=city] input").setValue("Москвава");
+        $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(currentDate);
         $("[data-test-id=name] input").setValue("Иванов Иван");
         $("[data-test-id=phone] input").setValue("+79111111111");
@@ -72,9 +63,9 @@ public class CardDeliveryTest {
 
     @Test
     public void incorrectNameTest() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String currentDate = LocalDate.now().format(formatter);
+        String currentDate = generateDate(3);
         $("[data-test-id=city] input").setValue("Москва");
+        $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(currentDate);
         $("[data-test-id=name] input").setValue("Ivanov ivan");
         $("[data-test-id=phone] input").setValue("+79111111111");
@@ -85,9 +76,9 @@ public class CardDeliveryTest {
 
     @Test
     public void emptyNameTest() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String currentDate = LocalDate.now().format(formatter);
+        String currentDate = generateDate(3);
         $("[data-test-id=city] input").setValue("Москва");
+        $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(currentDate);
         $("[data-test-id=phone] input").setValue("+79111111111");
         $(".checkbox__box").click();
@@ -97,9 +88,9 @@ public class CardDeliveryTest {
 
     @Test
     public void incorrectPhoneTest() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String currentDate = LocalDate.now().format(formatter);
+        String currentDate = generateDate(3);
         $("[data-test-id=city] input").setValue("Москва");
+        $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(currentDate);
         $("[data-test-id=name] input").setValue("Иванов Иван");
         $("[data-test-id=phone] input").setValue("+7911111111");
@@ -110,9 +101,9 @@ public class CardDeliveryTest {
 
     @Test
     public void emptyPhoneTest() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String currentDate = LocalDate.now().format(formatter);
+        String currentDate = generateDate(3);
         $("[data-test-id=city] input").setValue("Москва");
+        $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(currentDate);
         $("[data-test-id=name] input").setValue("Иванов Иван");
         $(".checkbox__box").click();
@@ -122,9 +113,9 @@ public class CardDeliveryTest {
 
     @Test
     public void withoutAgreementTest() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String currentDate = LocalDate.now().format(formatter);
+        String currentDate = generateDate(3);
         $("[data-test-id=city] input").setValue("Москва");
+        $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(currentDate);
         $("[data-test-id=name] input").setValue("Иванов Иван");
         $("[data-test-id=phone] input").setValue("+7911111111");
