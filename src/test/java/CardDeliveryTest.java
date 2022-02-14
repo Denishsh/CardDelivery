@@ -26,13 +26,13 @@ public class CardDeliveryTest {
         $("[data-test-id=city] input").setValue("Москва");
         $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(currentDate);
-        $("[data-test-id=name] input").setValue("Иванов Иван");
+        $("[data-test-id=name] input").setValue("Иванов Олег");
         $("[data-test-id=phone] input").setValue("+79111111111");
         $(".checkbox__box").click();
         $$("button").filter(text("Запланировать")).first().click();
         $(".notification__title").shouldHave(text("Успешно!"));
         $(".notification__content")
-                .shouldHave(text("Встреча успешно забронирована на " + currentDate));
+                .shouldHave(text("Встреча успешно запланирована на \n" + currentDate));
     }
 
 
