@@ -31,7 +31,7 @@ public class CardDeliveryTest {
         $(".checkbox__box").click();
         $$("button").filter(text("Запланировать")).first().click();
         $(".notification__title").shouldHave(text("Успешно!"));
-        $("[class='notification__content']")
+        $(".notification__content")
                 .shouldHave(text("Встреча успешно забронирована на " + currentDate));
     }
 
